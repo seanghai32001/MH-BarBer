@@ -1,0 +1,7 @@
+{
+  "name": "tsh-qr-reward-frontend",
+  "private": true,
+  "scripts": {
+    "build": "node build.mjs"
+  }
+}
