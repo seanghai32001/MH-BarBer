@@ -1,16 +1,5 @@
 {
   "framework": null,
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "headers": [
-    {
-      "source": "/config.js",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-store"
-        }
-      ]
-    }
-  ]
+  "buildCommand": null,
+  "outputDirectory": "."
 }
