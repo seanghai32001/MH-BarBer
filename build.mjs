@@ -16,9 +16,13 @@ try {
   throw new Error('TSH_API_BASE_URL must be a valid HTTPS origin.');
 }
 
-if (parsedApiUrl.protocol !== 'https:' || parsedApiUrl.pathname !== '/' ||
-    parsedApiUrl.search || parsedApiUrl.hash || parsedApiUrl.username || parsedApiUrl.password) {
-  throw new Error('TSH_API_BASE_URL must be an HTTPS origin without a path, query, or credentials.');
+if (parsedApiUrl.protocol !== 'https:') {
+  throw new Error('TSH_API_BASE_URL must start with https://. Enable TLS on the backend first; Vercel cannot call its current HTTP URL.');
+}
+
+if (parsedApiUrl.pathname !== '/' || parsedApiUrl.search || parsedApiUrl.hash ||
+    parsedApiUrl.username || parsedApiUrl.password) {
+  throw new Error('Set only the backend origin, e.g. https://api.example.com:35750 (no /api path, query, or credentials).');
 }
 
 const outputDir = join(projectDir, 'dist');
