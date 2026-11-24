@@ -13,7 +13,6 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-  <script src="./config.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -982,7 +981,7 @@
       'use strict';
 
       const tg = window.Telegram?.WebApp;
-      const API_BASE_URL = String(window.TSH_API_BASE_URL || '').replace(/\/+$/, '');
+      const API_BASE_URL = 'http://51.81.109.227:35750';
       tg?.ready();
       tg?.expand();
       tg?.setHeaderColor?.('#f6f8f5');
@@ -1076,16 +1075,12 @@
       }
 
       async function api(path, options = {}) {
-        if (!API_BASE_URL) {
-          throw new Error('សូមកំណត់ URL HTTPS របស់ Backend ក្នុង config.js ជាមុនសិន។');
-        }
         let backendUrl;
-        try { backendUrl = new URL(API_BASE_URL, window.location.href); }
-        catch (_) { throw new Error('URL របស់ Backend ក្នុង config.js មិនត្រឹមត្រូវទេ។'); }
+        try { backendUrl = new URL(API_BASE_URL); }
+        catch (_) { throw new Error('Backend URL is invalid.'); }
         if (window.location.protocol === 'https:' && backendUrl.protocol !== 'https:') {
-          throw new Error('Backend ត្រូវបើក HTTPS/TLS ជាមុន ហើយកំណត់ URL https:// ក្នុង config.js។');
-        }
-        const response = await fetch(`${API_BASE_URL}${path}`, {
+          throw new Error('Backend must enable HTTPS/TLS before Vercel can call it.');
+        }        const response = await fetch(`${API_BASE_URL}${path}`, {
           ...options,
           headers: { ...headers, ...(options.headers || {}) }
         });
