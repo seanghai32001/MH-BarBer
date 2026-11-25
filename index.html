@@ -386,6 +386,23 @@
       font-weight: 700;
     }
 
+    .scanner-stop-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      transition: background-color .18s ease, border-color .18s ease, transform .18s ease;
+    }
+
+    .scanner-stop-btn:hover {
+      border-color: #cad9ce;
+      background: #f0f5f1;
+    }
+
+    .scanner-stop-btn:active {
+      transform: translateY(1px);
+    }
+
     .scanner-frame {
       position: relative;
       overflow: hidden;
@@ -777,11 +794,11 @@
           </svg>
           បើកកាមេរ៉ាស្កេន QR
         </button>
-        <button id="stopScan" class="secondary-btn hide mt-4 w-full px-5 text-sm">
+        <button id="stopScan" type="button" aria-label="បញ្ឈប់ការស្កេន" class="secondary-btn scanner-stop-btn hide mt-4 w-full px-5 text-sm">
           <svg class="h-4 w-4" fill="none">
             <use href="#i-x"></use>
           </svg>
-          បិទកាមេរ៉ា
+          បញ្ឈប់ការស្កេន
         </button>
         <div class="mt-4 flex items-center justify-center gap-2 text-[10px] text-[#89958d]">
           <svg class="h-4 w-4 text-[#7a9a83]" fill="none">
