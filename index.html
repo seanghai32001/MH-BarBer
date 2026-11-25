@@ -726,8 +726,6 @@
 
     <!-- SCAN / HOME VIEW -->
     <section id="scanView" class="space-y-5 view-enter">
-      <!-- កាតសមតុល្យត្រូវបានដកចេញពីទីនេះ ហើយផ្លាស់ទៅទំព័រ Wallet វិញ -->
-
       <div id="pendingNotice" class="hide flex items-start gap-3 rounded-2xl border border-[#eadbb8] bg-[#fffaf0] p-4">
         <div class="icon-tile gold !h-9 !w-9 !rounded-xl"><svg class="h-5 w-5" fill="none">
             <use href="#i-clock"></use>
@@ -817,8 +815,6 @@
 
     <!-- WALLET VIEW -->
     <section id="walletView" class="hide space-y-4">
-
-      <!-- កាតសមតុល្យដែលបានផ្លាស់ទីមកទីនេះវិញ -->
       <div class="soft-card p-4">
         <div class="flex items-center gap-3">
           <div class="telegram-avatar-wrap wallet-profile-avatar">
@@ -916,7 +912,6 @@
           </div><b class="text-sm text-[#50758d]">2,000៛</b>
         </div>
       </div>
-
     </section>
 
     <!-- HISTORY VIEW -->
@@ -981,11 +976,13 @@
       'use strict';
 
       const tg = window.Telegram?.WebApp;
-      const API_BASE_URL = 'http://51.81.109.227:35750';
+      const API_BASE_URL = '';
       tg?.ready();
       tg?.expand();
-      tg?.setHeaderColor?.('#f6f8f5');
-      tg?.setBackgroundColor?.('#f6f8f5');
+      if (tg?.isVersionAtLeast?.('6.1')) {
+        tg?.setHeaderColor?.('#f6f8f5');
+        tg?.setBackgroundColor?.('#f6f8f5');
+      }
 
       const initData = tg?.initData || '';
       const headers = { 'Content-Type': 'application/json', 'X-Telegram-Init-Data': initData };
@@ -1071,17 +1068,15 @@
         el.classList.add('show');
         clearTimeout(toastTimer);
         toastTimer = setTimeout(() => el.classList.remove('show'), 3600);
-        try { tg?.HapticFeedback?.notificationOccurred(isError ? 'error' : 'success'); } catch (_) { }
+        if (tg?.isVersionAtLeast?.('6.1')) {
+          try { tg.HapticFeedback?.notificationOccurred(isError ? 'error' : 'success'); } catch (_) { }
+        }
       }
 
       async function api(path, options = {}) {
-        let backendUrl;
-        try { backendUrl = new URL(API_BASE_URL); }
-        catch (_) { throw new Error('Backend URL is invalid.'); }
-        if (window.location.protocol === 'https:' && backendUrl.protocol !== 'https:') {
-          throw new Error('Backend must enable HTTPS/TLS before Vercel can call it.');
-        }        const response = await fetch(`${API_BASE_URL}${path}`, {
+        const response = await fetch(`${API_BASE_URL}${path}`, {
           ...options,
+          cache: 'no-store',
           headers: { ...headers, ...(options.headers || {}) }
         });
         const body = await response.json().catch(() => ({}));
@@ -1104,7 +1099,6 @@
         const balance = Number(result.balance || 0);
         const threshold = Number(result.withdrawal_threshold || 2000);
 
-        // ធ្វើបច្ចុប្បន្នភាពកាតសមតុល្យដែលឥឡូវស្ថិតនៅក្នុង Wallet View
         $('balance').textContent = money(balance);
         $('thresholdLabel').textContent = `${money(threshold)}៛`;
         setProgress(balance, threshold, 'progress', 'progressCurrent', 'progressPercent');
@@ -1246,6 +1240,7 @@
         tg?.initDataUnsafe?.start_param ||
         new URLSearchParams(window.location.search).get('tgWebAppStartParam') || ''
       ).trim();
+
       async function startScanner() {
         if (!window.Html5Qrcode) {
           toast('មិនអាចបើក QR Scanner បានទេ។ សូមពិនិត្យការតភ្ជាប់ Internet។', true);
